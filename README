@@ -1,0 +1,9 @@
+node-xmpp-bosh-client api
+	1. Event-emitter for the following events
+		a: "online"	
+		b: "error"
+		c: "offline"
+		d: "stanza"	[just for now, may be later split it into seperate presence, iq, message stanza events]
+	2. send(ltxe) to send stanzas
+	3. sendMessage(to,body,type="chat",subject="") to send message
+	4. disconnect() to disconnect 
