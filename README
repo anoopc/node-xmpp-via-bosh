@@ -1,9 +1,94 @@
-node-xmpp-bosh-client api
+node-xmpp-via-bosh
+
+It is an xmpp library which lets you establish a persistent session to xmpp server 
+via a bosh-server and communicate willingly.
+
+
+Documentation for API:
+
+[A]: Constructor: Client(jid, password, host, port, route)
+			Parameters:
+						jid 		: [String] jabber id of user (e.g. 'user@example.com/office')
+						password	: [String] password
+						host		: [String] bosh-server host name or ip address (e.g. 'localhost')
+						port		: [String] bosh-server port number (e.g. 5280)
+						route		: [String] route attribute [if used] for connecting to xmpp server (e.g. 'xmpp:172.16.1.13:5222')
+			Return Value:	new Client Object having following properties:
+
 	1. Event-emitter for the following events
-		a: "online"	
+	
+		a: "online"
+			Event-listener	:	function callback()
+	
 		b: "error"
+			Event-listener	:	function callback(exception)
+								exception[String] is the description of error[may be much more than that]
+
 		c: "offline"
-		d: "stanza"	[just for now, may be later split it into seperate presence, iq, message stanza events]
-	2. send(ltxe) to send stanzas
-	3. sendMessage(to,body,type="chat",subject="") to send message
-	4. disconnect() to disconnect 
+			Event-listener	:	function callback(condition)
+								condition[String] is the description of reason for being offline
+
+		d: "stanza"
+			Event-listener	:	function callback(stanza)
+								stanza[Object] is the ltx xml element containing complete xml tree received for that stanza
+
+	2. Function: send(stanza)
+			enqueues the stanza into the pending array to be sent to bosh-server on next Tick
+			parameters:
+						stanza : [Object] ltx xml Element object
+
+	3. Function: sendMessage(to, body, type = "chat")
+			sends a message 'body' to jid 'to' with type set to 'type'
+			parameters:
+						to 		: [String] jid of receiver(e.g. myfriend@example.com/home)
+						body 	: [String] message to be sent
+						type 	: [String] should only be among the permitted values of 'type' for xmpp message stanza [RFC 3920,3921]
+
+	4. Function: disconnect()
+		sends immediately any pending stanzas, ends the stream by sending terminate packet and emits event 'offline'
+
+[B]: Constructor Element(xname, attrs)
+		alias to ltx.Element Constructor
+
+[C]: Function: $build(xname, attrs)
+		an alias for 'new ltx.Element(xname, attrs)'
+		Parameters:
+					xname : [string] name for the xml element
+					attrs : [Object] containing all the attributes to set up
+		Return value:
+					a new ltx.Element object
+
+[D]: Function: $msg(attrs)
+		an alias for 'new ltx.Element("message", attrs)'
+		Parameters:
+					attrs : [Object] containing all the attributes to set up
+		Return value:
+					a new ltx.Element object
+
+[E]: Function: $iq(attrs)
+		an alias for 'new ltx.Element("iq", attrs)'
+		Parameters:
+					attrs : [Object] containing all the attributes to set up
+		Return value:
+					a new ltx.Element object
+ 
+[F]: Function: $pres(attrs)
+		an alias for 'new ltx.Element("presence", attrs)'
+		Parameters:
+					attrs : [Object] containing all the attributes to set up
+		Return value:
+					a new ltx.Element object
+
+[G]: Function: setLogLevel(logLevel)
+		sets the logLevel for module[use only when in serious problem i.e. debug mode]
+		Parameters:
+				logLevel : [String] permissible values:
+									FATAL	:	displays nothing [default]
+									ERROR	:	displays error messages
+									INFO	:	informs about important events
+									DEBUG	:	prints each packet sent and received
+
+TODO:
+
+1. Document source files
+2. go through xmpp rfcs 3920 and 3921 and provide more functionality to user.

@@ -1,14 +1,20 @@
 /*
 	node-xmpp-bosh-client
-	1. Event-emitter for the following events
-		a: "online"	
-		b: "error"
-		c: "offline"
-		d: "stanza"	[just for now, may be later split it into seperate presence, iq, message stanza events]
-	2. send(ltxe) to send stanzas
-	3. sendMessage(to,body,type="chat",subject="") to send message
-	4. disconnect() to disconnect 
-	
+	[A]: Client()
+		1. Event-emitter for the following events
+			a: "online"	
+			b: "error"
+			c: "offline"
+			d: "stanza"	[just for now, may be later split it into seperate presence, iq, message stanza events]
+		2. send(ltxe) to send stanzas
+		3. sendMessage(to,body,type="chat") to send messages
+		4. disconnect() to disconnect
+	[B]:	Element() alias to ltx.Element	
+	[C]: $build(xname,attrs)	returns an instance of corresponding xml object
+	[D]: $msg(attrs)	returns an instance of message xml object
+	[E]: $iq(attrs)	returns an instance of iq xml object
+	[F]: $pres(attrs)	returns an instance of presence xml object
+	[G]: setLogLevel(logLevel) sets the loglevel[use only when extremely necessary]
 */
 
 var http 		= require("http");
@@ -117,8 +123,8 @@ function nxbClient(jid, password, host, port, route)
 			autil.logIt("ERROR", this.sess_attr.jid + " no response " + response);
 			
 			//emit offline event with condition
-			this.emit("offline", response);
-			
+			this.emit("error", response);
+
 			return;
 		}
 		
@@ -137,7 +143,7 @@ function nxbClient(jid, password, host, port, route)
 		var serror;
 		if(serror  =  body.getChild("error", NS_STREAM))
 		{
-			autil.log("ERROR", "stream Error :  " + serror);
+			autil.logIt("ERROR", "stream Error :  " + serror);
 			/* 	
 				No need to terminate as stream already closed by xmppserver and hence bosh-server
 				but to inform other asynch methods not to send messages any more change the state	
@@ -325,7 +331,7 @@ function nxbClient(jid, password, host, port, route)
 		this.state = STATE_ONLINE;
 		this.emit("online");
 		
-		//send any pending stenza"s
+		//send any pending stanza's
 		this.sendPending();
 		
 		return;
@@ -414,20 +420,6 @@ function nxbClient(jid, password, host, port, route)
 		this.sendXml(iq);
 	}
 	
-	//sends a single message packet
-	this.sendMessage = function(to, mbody, type, msubject)
-	{
-		var message = new ltx.Element("message", {to : to, from : this.sess_attr.jid.toString(), type : type || "chat", "xml:lang" : "en"});
-		var body = new ltx.Element("body").t(mbody);
-		if(msubject)
-		{
-			var subject = new ltx.Element("subject").t(msubject);
-			message.cnode(subject);
-		}
-		message.cnode(body);
-		this.send(message);
-	}
-	
 	//sends an ltx-xml element by wrapping it into body element[change it to array thing] 
 	this.sendXml = function(ltxe)
 	{
@@ -438,13 +430,22 @@ function nxbClient(jid, password, host, port, route)
 		}
 		this.sendHttp(body.toString());
 	}
+		
+	//sends a single message packet
+	this.sendMessage = function(to, mbody, type)
+	{
+		var message = new ltx.Element("message", {to : to, from : this.sess_attr.jid.toString(), type : type || "chat", "xml:lang" : "en"});
+		var body = new ltx.Element("body").t(mbody);
+		message.cnode(body);
+		this.send(message);
+	}
 	
 	//puts ltx-element into pending[] to be sent later
 	this.send = function(ltxe)
 	{
 		if(this.state != STATE_ONLINE)
 		{
-			this.emit("error", "can send only when u are ONLINE!!!");
+			this.emit("error", "can send something only when u are ONLINE!!!");
 			return;
 		}
 		if(ltxe)
@@ -456,7 +457,7 @@ function nxbClient(jid, password, host, port, route)
 			this.hasNextTick = true;
 			var that = this;
 			process.nextTick(function() {
-				if(that.hasNextTick)
+				if(that.hasNextTick && that.state == STATE_ONLINE)
 				{
 					that.sendPending();
 				}
@@ -467,28 +468,60 @@ function nxbClient(jid, password, host, port, route)
 	//sends all the pending messages (in pending []) to server 
 	this.sendPending = function()
 	{
-		var body = new ltx.Element("body", {sid : this.sess_attr.sid, rid : this.sess_attr.rid++, xmlns : NS_DEF, stream : this.sess_attr.stream});
-		while(this.pending.length > 0)
+		//send only if u have something to send or u need to poll the bosh-server
+		if(this.pending.length > 0 || this.chold < 1)
 		{
-			body.cnode(this.pending.shift());
+			var body = new ltx.Element("body", {sid : this.sess_attr.sid, rid : this.sess_attr.rid++, xmlns : NS_DEF, stream : this.sess_attr.stream});
+			while(this.pending.length > 0)
+			{
+				body.cnode(this.pending.shift());
+			}
+			this.sendHttp(body.toString());
+			this.hasNextTick = false;
 		}
-		this.sendHttp(body.toString());
-		this.hasNextTick = false;
 	}
-	
+
 	//disconnect the connection
 	this.disconnect = function()
 	{
-		this.terminate();
+		//before terminating, send any pending stanzas
+		this.sendPending();
 		
-		//should emit offline event or not??
+		this.terminate();
+
+		//should emit 'offline' event or not??
+		//[yes, because if i am calling disconnect() and i dont care whatever comes to me afterwards ]
 		this.emit("offline", "session termination by user");
 		return;
 	}
 }
-
 util.inherits(nxbClient, events.EventEmitter);
 
 exports.Client = nxbClient;
-exports.Element = ltx.Element;	//ltx Element object to create stanzas
 
+//stanza builders
+
+//ltx Element object to create stanzas
+exports.Element = ltx.Element;
+
+//generic packet building helper function
+exports.$build = function(xname, attrib){
+	return new ltx.element(xname, attrib);
+}
+
+//packet builder helper function for message stanza
+exports.$msg = function(attrib){
+	return new ltx.Element("message", attrib);
+}
+
+//packet builder helper function for iq stanza
+exports.$iq = function(attrib){
+	return new ltx.Element("iq", attrib);
+}
+
+//packet builder helper function for iq stanza
+exports.$pres = function(attrib){
+	return new ltx.Element("presence", attrib);
+}
+
+exports.setLogLevel = autil.setLogLevel;
