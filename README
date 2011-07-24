@@ -1,6 +1,6 @@
-
 node-xmpp-via-bosh
 
+Inspired by node-xmpp(https://github.com/astro/node-xmpp) and xmppjs(http://github.com/mwild1/xmppjs)
 It is an xmpp library which lets you establish a persistent session to xmpp server 
 via a bosh-server and communicate willingly.
 
