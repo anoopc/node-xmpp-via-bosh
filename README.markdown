@@ -26,9 +26,9 @@ it is API compatible with node-xmpp (except for the constructor).
 It is an xmpp library which lets you establish a persistent session to xmpp server 
 via a bosh-server and communicate willingly.
 
-Documentation for API:
+## Documentation for API ##
 
-[A]: Constructor: Client(jid, password, bosh, route)
+1. Constructor: Client(jid, password, bosh, route)
 		  Parameters:
 			  *jid* 		: [String] jabber id of user (e.g. 'user@example.com/office')
 			  *password*	: [String] password
@@ -37,7 +37,7 @@ Documentation for API:
 		  Return Value:	
 	                  new Client Object having following properties:
 
-	1. Event-emitter for the following events
+	1.1. Event-emitter for the following events
 	
 		a: "online"
 			Event-listener	: function callback()
@@ -54,61 +54,61 @@ Documentation for API:
 			Event-listener	: function callback(stanza)
 					  stanza[Object] is the ltx xml element. 
 
-	2. Function: send(stanza)
+	1.2. Function: 'send(stanza)'
 			enqueues the stanza into the pending array to be sent to bosh-server on next Tick
 			parameters:
-				stanza : [Object] ltx xml Element object
+				*stanza* : [Object] ltx xml Element object
 
-	3. Function: sendMessage(to, body, type = "chat")
+	1.3. Function: 'sendMessage(to, body, type = "chat")'
 	             sends a message 'body' to jid 'to' with type set to 'type'
 		     parameters:
 			     *to*	: [String] jid of receiver(e.g. myfriend@example.com/home)
 			     *body* : [String] message to be sent
 			     *type* : [String] should only be among the permitted values of 'type' for xmpp message stanza
 
-	4. Function: disconnect()
+	1.4. Function: 'disconnect()'
 		sends immediately any pending stanzas, ends the stream by sending terminate packet.
 
-[B]: Constructor Element(xname, attrs)
+2. Constructor 'Element(xname, attrs)'
 		alias to ltx.Element Constructor
 
-[C]: Function: $build(xname, attrs)
+3. Function: '$build(xname, attrs)'
 		an alias for 'new ltx.Element(xname, attrs)'
 		Parameters:
-			xname : [string] name for the xml element
-			attrs : [Object] containing all the attributes to set up
+			*xname* : [string] name for the xml element
+			*attrs* : [Object] containing all the attributes to set up
 		Return value:
 			a new ltx.Element object
 
-[D]: Function: $msg(attrs)
+4. Function: '$msg(attrs)'
 		an alias for 'new ltx.Element("message", attrs)'
 		Parameters:
-			attrs : [Object] containing all the attributes to set up
+			*attrs* : [Object] containing all the attributes to set up
 		Return value:
 			a new ltx.Element object
 
-[E]: Function: $iq(attrs)
+5. Function: '$iq(attrs)'
 		an alias for 'new ltx.Element("iq", attrs)'
 		Parameters:
 			attrs : [Object] containing all the attributes to set up
 		Return value:
 			a new ltx.Element object
  
-[F]: Function: $pres(attrs)
+6. Function: '$pres(attrs)'
 		an alias for 'new ltx.Element("presence", attrs)'
 		Parameters:
-			attrs : [Object] containing all the attributes to set up
+			*attrs* : [Object] containing all the attributes to set up
 		Return value:
 			a new ltx.Element object
 
-[G]: Function: setLogLevel(logLevel)
+7. Function: 'setLogLevel(logLevel)'
 		sets the logLevel for module[use only when in serious problem i.e. debug mode]
 		Parameters:
-			logLevel : [String] permissible values:
-			           FATAL	:	displays nothing [default]
-				   ERROR	:	displays error messages
-				   INFO		:	informs about important events
-				   DEBUG	:	prints each packet sent and received
+			*logLevel* : [String] permissible values:
+			       *FATAL*	:	displays nothing [default]
+				   *ERROR*	:	displays error messages
+				   *INFO*		:	informs about important events
+				   *DEBUG*	:	prints each packet sent and received
 
 ## Shout outs ##
 
