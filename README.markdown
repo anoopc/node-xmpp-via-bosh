@@ -1,14 +1,22 @@
-node-xmpp-via-bosh
+# node-bosh-xmpp #
 
-I was looking for a BOSH XMPP client for node and came accross Anoop's implementation on:
-https://github.com/anoopc/node-xmpp-via-bosh
+## Motivation ##
 
-This client is used in the Webinos project: http://www.webinos.org
+Are you using [node-xmpp](https://github.com/astro/node-xmpp) for XMPP? But get blocked by coorperate firewalls? Then
+[node-bosh-xmpp](https://github.com/eelcocramer/node-xmpp-via-bosh) is API compatible with [node-xmpp](https://github.com/astro/node-xmpp)
+and gives you the ability to use XMPP over a standard HTTP port.
 
-The library is almost the same as Anoop's but I fixed some issues that I had with it. I wanted to be able to specify
-the URL of the BOSH server and I also had some issues with the authorization proces. 
+## Credits go to Anoopc ##
 
-This module can be installed via: npm install node-bosh-xmpp
+I was looking for a BOSH XMPP client for node and came accross Anoop's [node-xmpp-via-bosh](https://github.com/anoopc/node-xmpp-via-bosh) implementation.
+His code was not completely working for me so I forked his code and fixed the issue I was having. I wanted to be able to specify
+the URL of the BOSH server and I also had some issues with the authorization proces.
+
+## Installation instructions ##
+
+	npm install node-bosh-xmpp
+
+## Code instructions ##
 
 Following you will find the documentation from Anoop which I updated to reflect my changes:
 
@@ -22,10 +30,10 @@ Documentation for API:
 
 [A]: Constructor: Client(jid, password, bosh, route)
 		  Parameters:
-			  jid 		: [String] jabber id of user (e.g. 'user@example.com/office')
-			  password	: [String] password
-			  bosh		: [String] url of the bosh-server (e.g. 'http://localhost:5280/http-bind/')
-			  route		: [String] route attribute [if used] for connecting to xmpp server
+			  *jid* 		: [String] jabber id of user (e.g. 'user@example.com/office')
+			  *password*	: [String] password
+			  *bosh*		: [String] url of the bosh-server (e.g. 'http://localhost:5280/http-bind/')
+			  *route*		: [String] route attribute [if used] for connecting to xmpp server
 		  Return Value:	
 	                  new Client Object having following properties:
 
@@ -54,9 +62,9 @@ Documentation for API:
 	3. Function: sendMessage(to, body, type = "chat")
 	             sends a message 'body' to jid 'to' with type set to 'type'
 		     parameters:
-			     to	  : [String] jid of receiver(e.g. myfriend@example.com/home)
-			     body : [String] message to be sent
-			     type : [String] should only be among the permitted values of 'type' for xmpp message stanza
+			     *to*	: [String] jid of receiver(e.g. myfriend@example.com/home)
+			     *body* : [String] message to be sent
+			     *type* : [String] should only be among the permitted values of 'type' for xmpp message stanza
 
 	4. Function: disconnect()
 		sends immediately any pending stanzas, ends the stream by sending terminate packet.
@@ -102,7 +110,6 @@ Documentation for API:
 				   INFO		:	informs about important events
 				   DEBUG	:	prints each packet sent and received
 
-TODO:
+## Shout outs ##
 
-1. Document source files
-2. go through xmpp rfcs 3920 and 3921 and provide more functionality to user.
+Shout outs go to the [Webinos project](http://www.webinos.org). They provided the time and need to make this fix.

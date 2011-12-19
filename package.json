@@ -1,6 +1,6 @@
 { 
 	"name": "node-bosh-xmpp",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "XMPP via BOSH",
 	"author": "Original code by Anoop Chaurasiya. Bugfixes and improvements by Eelco Cramer",
 	"keywords": ["xmpp", "bosh", "http", "jabber"],
