@@ -29,13 +29,13 @@ via a bosh-server and communicate willingly.
 ## Documentation for API ##
 
 * Constructor: `Client(jid, password, bosh, route)`  
-	Parameters:
-		*jid* 		: [String] jabber id of user (e.g. `user@example.com/office`)
-		*password*	: [String] password
-		*bosh*		: [String] url of the bosh-server (e.g. `http://localhost:5280/http-bind/`)
-		*route*		: [String] route attribute [if used] for connecting to xmpp server
-	Return Value:  
-		new Client Object having following properties:  
+		Parameters:
+			*jid* 		: [String] jabber id of user (e.g. `user@example.com/office`)
+			*password*	: [String] password
+			*bosh*		: [String] url of the bosh-server (e.g. `http://localhost:5280/http-bind/`)
+			*route*		: [String] route attribute [if used] for connecting to xmpp server
+		Return Value:
+			new Client Object having following properties:
 
 	1. Event-emitter for the following events
 	
