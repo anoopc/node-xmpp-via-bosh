@@ -8,6 +8,8 @@ This client is used in the Webinos project: http://www.webinos.org
 The library is almost the same as Anoop's but I fixed some issues that I had with it. I wanted to be able to specify
 the URL of the BOSH server and I also had some issues with the authorization proces. 
 
+This module can be installed via: npm install node-bosh-xmpp
+
 Following you will find the documentation from Anoop which I updated to reflect my changes:
 
 It is inspired by node-xmpp (https://github.com/astro/node-xmpp) and xmppjs(http://github.com/mwild1/xmppjs) and
