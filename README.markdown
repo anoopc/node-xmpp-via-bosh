@@ -14,7 +14,7 @@ the URL of the BOSH server and I also had some issues with the authorization pro
 
 ## Installation instructions ##
 
-	npm install node-bosh-xmpp
+	npm install node-bosh-xmpp-client
 
 ## Code instructions ##
 
