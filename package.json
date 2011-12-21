@@ -1,6 +1,6 @@
 { 
 	"name": "node-bosh-xmpp-client",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"description": "XMPP clients that connects via BOSH",
 	"author": "Original code by Anoop Chaurasiya. Bugfixes and improvements by Eelco Cramer",
 	"keywords": ["xmpp", "bosh", "http", "jabber"],
