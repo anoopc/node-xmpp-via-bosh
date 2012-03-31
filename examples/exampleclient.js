@@ -1,13 +1,12 @@
-var xmpp = require("./boshclient.js");
+var xmpp = require("../lib/boshclient.js");
 
 //change this data accordingly
 var myjid = "me@example.com";
 var mypassword = "keepitsecret";
 var friend = "she@example.com";
-var host = "localhost";
-var portno = "5280";
+var bosh = "http://localhost:5280/http-bind";
 
-var me = new xmpp.Client(myjid + "/office", mypassword, host, portno);
+var me = new xmpp.Client(myjid + "/office", mypassword, bosh);
 
 me.on('error', function(exception) {
 	console.log("Error: " + exception);
